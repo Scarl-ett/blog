@@ -9,6 +9,8 @@ function App() {
   let [title, setTitle] = useState(['남자 코트 추천', '맛집 추천', '리액트 독학']);
   let [like, setLike] = useState([0, 0, 0]);
   let [modal, setModal] = useState(false);
+  let [idx, setIdx] = useState(0);
+  let [val, setVal] = useState('');
 
   // // array 자료
   // let num = [1, 2];
@@ -18,11 +20,10 @@ function App() {
 
   //state
   // -> 변동시 자동으로 html에 변영되게 만들고 싶을때
-
   return (
     <div className='App'>
       <div className="black-nav">
-        <h4 style={{ color: 'red', fontSize: '16px' }}>블로그임</h4>
+        <h4 style={{ color: 'white', fontSize: '16px' }}>ReactBlog</h4>
       </div>
 
       <button onClick={() => {
@@ -58,8 +59,13 @@ function App() {
         title.map((t, index) => {
           return (
             <div className="list" key={index}>
-              <h4 onClick={() => { setModal(!modal) }}>{title[index]}
-                <span onClick={() => {
+              <h4 onClick={() => {
+                setModal(!modal)
+                setIdx(index)
+              }}
+              >{title[index]}
+                <span onClick={(e) => {
+                  e.stopPropagation();
                   let copy = [...like];
                   copy[index] += 1
                   setLike(copy)
@@ -68,6 +74,7 @@ function App() {
                 </span> {like[index]}
               </h4>
               <p>2월 17일 발행</p>
+              <button onClick={() => title.filter(title => title !== title[index])}>삭제</button>
             </div>
           )
         })
@@ -75,18 +82,22 @@ function App() {
 
       {/* <h4>{post}</h4> */}
 
-      {modal ? <Modal /> : null}
+      <input onChange={(e) => { setVal(e.target.value); console.log(val) }} />
+      <button>저장</button>
+
+      {modal ? <Modal title={title} idx={idx} /> : null}
 
     </div >
   );
 }
 
-function Modal() {
+function Modal(props) {
   return (
-    <div className="modal">
-      <h4>제목</h4>
+    <div className="modal" style={{ background: props.color }}>
+      <h4>{props.title[props.idx]}</h4>
       <p>날짜</p>
       <p>상세내용</p>
+      <button>글수정</button>
     </div>
   )
 }
