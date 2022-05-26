@@ -1,12 +1,13 @@
 /* eslint-disable */
 import './App.css';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
 
   // 자료 잠깐 저장할 땐 변수
   let post = '강남 우동 맛집';
   let [title, setTitle] = useState(['남자 코트 추천', '맛집 추천', '리액트 독학']);
+  let [date, setDate] = useState(['2022-04-01', '2022-04-01', '2022-04-01']);
   let [like, setLike] = useState([0, 0, 0]);
   let [modal, setModal] = useState(false);
   let [idx, setIdx] = useState(0);
@@ -73,8 +74,12 @@ function App() {
                   &nbsp;❤
                 </span> {like[index]}
               </h4>
-              <p>2월 17일 발행</p>
-              <button onClick={() => title.filter(title => title !== title[index])}>삭제</button>
+              <p>{date[index]}</p>
+              <button onClick={() => {
+                let copy = [...title];
+                copy.splice(index, 1);
+                setTitle(copy);
+              }}>삭제</button>
             </div>
           )
         })
@@ -83,10 +88,28 @@ function App() {
       {/* <h4>{post}</h4> */}
 
       <input onChange={(e) => { setVal(e.target.value); console.log(val) }} />
-      <button>저장</button>
+      <button onClick={(e) =>{
+        let copy = [...title];
+        copy.unshift(val);
+        setTitle(copy);
+        
+        let copy2 = [...like];
+        copy2.unshift(0);
+        setLike(copy2);
+        
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ("0" + (1 + today.getMonth())).slice(-2);
+        var day = ("0" + today.getDate()).slice(-2);
+        let copy3 = [...date];
+        copy3.unshift(year + '-' + month + '-' + day);
+        setDate(copy3);
+      }} disabled={!val}>글 발행</button>
 
       {modal ? <Modal title={title} idx={idx} /> : null}
-
+      <br/>
+      <br/>
+      <Profile/>  
     </div >
   );
 }
@@ -100,6 +123,35 @@ function Modal(props) {
       <button>글수정</button>
     </div>
   )
+}
+
+class Profile extends React.Component {
+  constructor() {
+    super();
+    this.state = {name : 'kim', age : 30}
+  }
+
+  // changeName() {
+  //   this.setState({name : 'Park'})
+  // }
+
+  changeName = () => {
+    this.setState({name : 'Park'})
+  }
+
+  render(){
+    return (
+      <div>
+        <h3>프로필입니다.</h3>
+        <p>저는 {this.state.name} 입니다.</p>
+        <button onClick={
+          // this.setState({name : 'Park'})
+        // this.changeName.bind(this)
+        this.changeName
+        }>변경</button>
+      </div>
+    )
+  }
 }
 
 export default App;
